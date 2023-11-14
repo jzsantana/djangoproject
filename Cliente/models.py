@@ -28,7 +28,7 @@ class Cliente(models.Model):
 class ClienteConta(models.Model):
     id_cliente = models.ForeignKey(Cliente, editable=False, on_delete=models.CASCADE, default="")
     num_conta = models.IntegerField()
-    agencia = models.CharField(max_length=3)
+    agencia = models.CharField(max_length=4)
     senha = models.CharField(max_length=8)
     saldo = models.DecimalField(max_digits=10, decimal_places=2)
     

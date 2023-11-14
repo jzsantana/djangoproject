@@ -2,6 +2,9 @@ from django.shortcuts import render
 from .models import ClienteConta, Cliente
 import random
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 # from django.contrib.auth.decorators import login_required
 # from datetime import datetime
 
@@ -18,17 +21,24 @@ class SorteioUnico:
         return numero_sorteado
 
 # Create your views here.
-
-def criar_conta(request):
-    sorteio = SorteioUnico
-    num_conta = sorteio.sortear_numero(100000, 999999)
+@receiver(post_save, sender=Cliente)
+def criar_conta(sender, instance, created, **kwargs):
+    if created:
+        sorteio = SorteioUnico(100000, 999999)
+        numero_conta = sorteio.sortear_numero()
+        senha_conta = request.POST.get()
+        
+        cliente = Cliente.objects.get(id)
+        cliente_conta = ClienteConta.objects.create(
+            id_cliente=cliente,
+            agencia = '0001',
+            num_conta = numero_conta,
+            senha = senha_conta,
+            saldo = 0.0
+        )
     
-    cliente = Cliente.objects.get(id)
-    cliente_conta = ClienteConta.objects.create(
-        id_cliente=cliente(id),
-        num_conta=num_conta
-    )
-
+    post_save.connect(criar_conta, sender=Cliente)
+    cliente_conta.save()
     
     ...
     
