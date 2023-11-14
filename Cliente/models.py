@@ -26,11 +26,11 @@ class Cliente(models.Model):
 
 
 class ClienteConta(models.Model):
-    id_cliente = models.ForeignKey(Cliente, editable=False, on_delete=models.CASCADE, default="")
+    id_cliente = models.ForeignKey(Cliente, editable=False, on_delete=models.CASCADE)
     num_conta = models.IntegerField()
-    agencia = models.CharField(max_length=4)
-    senha = models.CharField(max_length=8)
-    saldo = models.DecimalField(max_digits=10, decimal_places=2)
+    agencia = models.CharField(max_length=4, default='0001')
+    senha = models.CharField(max_length=8, unique=True)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     
     def __str__(self):
         return self.num_conta

@@ -25,22 +25,21 @@ class SorteioUnico:
 def criar_conta(sender, instance, created, **kwargs):
     if created:
         sorteio = SorteioUnico(100000, 999999)
-        numero_conta = sorteio.sortear_numero()
-        senha_conta = request.POST.get()
+        num_conta = sorteio.sortear_numero()
         
         cliente = Cliente.objects.get(id)
         cliente_conta = ClienteConta.objects.create(
-            id_cliente=cliente,
+            cliente=instance,
             agencia = '0001',
-            num_conta = numero_conta,
-            senha = senha_conta,
+            num_conta = num_conta,
+            senha = senha,
             saldo = 0.0
         )
     
-    post_save.connect(criar_conta, sender=Cliente)
+    # post_save.connect(criar_conta, sender=Cliente)
     cliente_conta.save()
     
-    ...
+post_save.connect(criar_conta, sender=Cliente)    
     
     # USAR O DJOSER, UMA FERRAMENTA PARA JWT
     
