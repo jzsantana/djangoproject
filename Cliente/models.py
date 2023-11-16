@@ -17,6 +17,7 @@ class Cliente(models.Model):
     cpf = models.CharField(max_length=11)
     data_nascimento = models.DateField()
     tipo_conta = models.CharField(max_length=20, choices=TIPO_CONTA_CHOICES)
+    telefone = models.CharField(max_length=11)
     cep = models.CharField(max_length=8, default="")
     cidade = models.CharField(max_length=80, default="")
     uf = models.CharField(max_length=2, default="")
