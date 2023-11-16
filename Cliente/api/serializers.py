@@ -12,3 +12,9 @@ class ClienteContaSerializer(serializers.ModelSerializer):
         model = models.ClienteConta
         fields = '__all__'
         
+        
+class CartaoDebitoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CartaoDebito
+        fields = '__all__'
+        

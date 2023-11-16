@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import ClienteConta, Cliente
+# from .models import ClienteConta, Cliente
 import random
 
 from django.db.models.signals import post_save
@@ -14,32 +14,16 @@ class SorteioUnico:
 
     def sortear_numero(self):
         if not self.range:
-            raise ValueError("Todos os números já foram sorteados")
+            raise ValueError
         
         numero_sorteado = random.choice(list(self.range))
         self.range.remove(numero_sorteado)
         return numero_sorteado
 
 # Create your views here.
-@receiver(post_save, sender=Cliente)
-def criar_conta(sender, instance, created, **kwargs):
-    if created:
-        sorteio = SorteioUnico(100000, 999999)
-        num_conta = sorteio.sortear_numero()
-        
-        cliente = Cliente.objects.get(id)
-        cliente_conta = ClienteConta.objects.create(
-            cliente=instance,
-            agencia = '0001',
-            num_conta = num_conta,
-            senha = senha,
-            saldo = 0.0
-        )
+def criar_cartao_credito():
+    ...
     
-    # post_save.connect(criar_conta, sender=Cliente)
-    cliente_conta.save()
+    # USAR O DJOSER, UMA FERRAMENTA PARA JWT    
     
-post_save.connect(criar_conta, sender=Cliente)    
-    
-    # USAR O DJOSER, UMA FERRAMENTA PARA JWT
     
