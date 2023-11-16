@@ -7,6 +7,14 @@ from django.contrib import messages
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from Cliente.models import Cliente
+
+
+from .api.serializers import ClienteSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
 # from django.contrib.auth.decorators import login_required
 # from datetime import datetime
 
@@ -21,6 +29,15 @@ class SorteioUnico:
         numero_sorteado = random.choice(list(self.range))
         self.range.remove(numero_sorteado)
         return numero_sorteado
+
+
+class TudoAPIView(APIView):
+    def get(self, request):
+        try:
+            queryset = Cliente.objects.all()
+            serializer = ClienteSerializer(queryset, many=True)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Create your views here.
 def criar_cartao_credito(request):
