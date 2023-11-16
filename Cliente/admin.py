@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cliente, ClienteConta, CartaoDebito
+from .models import Cliente, ClienteConta, CartaoDebito, CartaoCredito
 
 # Register your models here.
 @admin.register(Cliente)
@@ -17,3 +17,8 @@ class ClienteContaAdmin(admin.ModelAdmin):
 @admin.register(CartaoDebito)
 class CartaoDebitoAdmin(admin.ModelAdmin):
     list_display = ('num_cartao_debito', 'ativo')
+    
+    
+@admin.register(CartaoCredito)
+class CartaoCreditoAdmin(admin.ModelAdmin):
+    list_display = ('num_cartao_credito', 'ativo')

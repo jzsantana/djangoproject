@@ -1,7 +1,9 @@
 from django.shortcuts import render
-# from .models import ClienteConta, Cliente
+# from .models import ClienteConta, CartaoCredito
+# from .models import Cliente, ClienteConta, CartaoCredito
 import random
 
+from django.contrib import messages
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -21,7 +23,29 @@ class SorteioUnico:
         return numero_sorteado
 
 # Create your views here.
-def criar_cartao_credito():
+def criar_cartao_credito(request):
+    from .models import ClienteConta, CartaoCredito
+    
+    sorteio_senha_cartao = SorteioUnico(1000, 9999)
+    sorteio_cvv = SorteioUnico(100, 999)
+    sorteio_num_cartao = SorteioUnico(1000000000000000, 9999999999999999)
+    
+    num_cartao_credito = sorteio_num_cartao.sortear_numero()
+    senha_credito = sorteio_senha_cartao.sortear_numero()
+    cvv_credito = sorteio_cvv.sortear_numero()
+    
+    conta_cliente = ClienteConta
+    limite = conta_cliente.saldo * 0.08
+    
+    if conta_cliente.saldo >= 1100:
+        CartaoCredito.objects.create(
+            num_cartao_credito = num_cartao_credito,
+            id_cliente_conta = conta_cliente,
+            senha_credito = senha_credito,
+            limite = limite,
+            ativo = True,
+            cvv_credito = cvv_credito
+        )
     ...
     
     # USAR O DJOSER, UMA FERRAMENTA PARA JWT    

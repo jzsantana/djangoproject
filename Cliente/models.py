@@ -25,6 +25,9 @@ class Cliente(models.Model):
     num_casa = models.CharField(max_length=6, default=None)
     senha = models.CharField(max_length=8)
     
+    # a pi tem que retornar um amensgame caso o cliente faça uma transferencia 
+    # com valor acima do que há na conta
+    
     def __str__(self):
         return self.nome
 
@@ -59,6 +62,10 @@ class CartaoCredito(models.Model):
     senha_credito = models.CharField(max_length=6, default=True)
     limite = models.DecimalField(max_digits=10, decimal_places=2)
     cvv_credito = models.IntegerField(default=True)
+    
+    def __str__(self):
+        return self.num_cartao_credito
+
 
 
 class Movimentacao(models.Model):
@@ -100,12 +107,12 @@ def criar_conta(sender, instance, created, **kwargs):
 @receiver(post_save, sender=ClienteConta)
 def criar_carta_debito(sender, instance, created, **kwargs):
     if created:
-        sorteio_cartao = SorteioUnico(1000, 9999)
+        sorteio_senha_cartao = SorteioUnico(1000, 9999)
         sorteio_cvv = SorteioUnico(100, 999)
         
         num_cartao_debito = 1231586478946658
         ativo = True
-        senha_debito = sorteio_cartao.sortear_numero()
+        senha_debito = sorteio_senha_cartao.sortear_numero()
         cvv_debito = sorteio_cvv.sortear_numero()
         
         CartaoDebito.objects.create(

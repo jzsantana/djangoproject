@@ -18,3 +18,10 @@ class CartaoDebitoSerializer(serializers.ModelSerializer):
         model = models.CartaoDebito
         fields = '__all__'
         
+        
+class CartaoCreditoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CartaoCredito
+        fields = '__all__'
+                
+        
