@@ -11,7 +11,7 @@ class ClienteAdmin(admin.ModelAdmin):
     
 @admin.register(ClienteConta)
 class ClienteContaAdmin(admin.ModelAdmin):
-    list_display = ('id_cliente','num_conta', 'agencia', 'saldo')
+    list_display = ('id_cliente','num_conta', 'agencia', 'saldo', 'data_criacao')
     
     
 @admin.register(CartaoDebito)
