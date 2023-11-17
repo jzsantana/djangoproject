@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
     'rest_framework',
     'Cliente',
     'stdimage',
@@ -133,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_famework.authentication.SessionAuthentication'
+        'rest_framework.authentication.SessionAuthentication'
     ),
  
     # Use Django's standard `django.contrib.auth` permissions,

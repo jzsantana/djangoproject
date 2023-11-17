@@ -1,5 +1,6 @@
 from rest_framework import serializers
-import models
+# from .models import Cliente, ClienteConta, CartaoCredito, CartaoDebito
+from Cliente import models
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,4 +25,3 @@ class CartaoCreditoSerializer(serializers.ModelSerializer):
         model = models.CartaoCredito
         fields = '__all__'
                 
-        

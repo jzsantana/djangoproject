@@ -1,14 +1,14 @@
-# from rest_framework import viewsets
-# from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet
+# from rest_framework import serializers
+from Cliente import models
+from rest_framework import filters
+from Cliente.api.serializers import ClienteSerializer
 # # from django_filters.rest_framework import DjangoFilterBackend
 
 
-# class ClienteViewSet(viewsets.ModelViewSet):
-#     serializer_class = serializers.ClienteSerializer
-#     queryset = models.Cliente.objects.all()
-
-#     # filter_backends = [DjangoFilterBackend]
-#     # filterset_fields = ['nome', 'telefone', 'email']
-
-#     filter_backends = [filters.SearchFilter]
-#     search_fields = ['nome', 'telefone', 'email', '']
+class ClienteViewSet(ModelViewSet):
+    queryset =  models.Cliente.objects.all()
+    serializer_class = ClienteSerializer
+    
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['nome', 'id']

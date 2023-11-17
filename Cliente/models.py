@@ -1,7 +1,22 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .views import SorteioUnico
+# from .views import SorteioUnico
+import random
+
+
+class SorteioUnico:
+    def __init__(self, inicio, fim):
+        self.range = set(range(inicio, fim + 1))
+
+    def sortear_numero(self):
+        if not self.range:
+            raise ValueError
+        
+        numero_sorteado = random.choice(list(self.range))
+        self.range.remove(numero_sorteado)
+        return numero_sorteado
+
 
 # Create your models here.
 class Cliente(models.Model):
@@ -68,7 +83,6 @@ class CartaoCredito(models.Model):
         return self.num_cartao_credito
 
 
-
 class Movimentacao(models.Model):
     
     PIX = "PIX"
@@ -90,7 +104,7 @@ class Investimento(models.Model):
     
     ...
     
-    
+
 @receiver(post_save, sender=Cliente)
 def criar_conta(sender, instance, created, **kwargs):
     if created:
@@ -124,3 +138,4 @@ def criar_carta_debito(sender, instance, created, **kwargs):
             cvv_debito = cvv_debito
         )
     
+
