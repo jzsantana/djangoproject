@@ -19,13 +19,11 @@ from django.urls import path, include
 from Cliente.api.viewset import ClienteViewSet
 from rest_framework.routers import DefaultRouter
 # from django.rest_framework import routers
-
 # route = routers.DefaultRouter()
 # route.register(r'api_cliente', apisviewsets.ClienteViewSet, basename="cliente")
 
 router = DefaultRouter()
-# # router.register(r'clientes', ClienteViewSet)
-router.register(r'clientes', ClienteViewSet, basename='cliente')
+router.register(r'clientes', ClienteViewSet, basename='clientes')
 
 
 urlpatterns = [
