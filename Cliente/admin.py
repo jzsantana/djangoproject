@@ -21,4 +21,4 @@ class CartaoDebitoAdmin(admin.ModelAdmin):
     
 @admin.register(CartaoCredito)
 class CartaoCreditoAdmin(admin.ModelAdmin):
-    list_display = ('num_cartao_credito', 'ativo')
+    list_display = ('num_cartao_credito', 'ativo', 'id_cliente_conta')

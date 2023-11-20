@@ -12,6 +12,18 @@ from django.shortcuts import render
 from .models import ClienteConta, CartaoCredito,SorteioUnico
 
 
+from rest_framework import viewsets
+# from rest_framework import serializers
+from Cliente.models import Cliente
+from rest_framework import filters
+from Cliente.serializers import ClienteSerializer
+# # from django_filters.rest_framework import DjangoFilterBackend
+
+
+class ClienteViewSet(viewsets.ModelViewSet):
+    queryset =  Cliente.objects.all()
+    serializer_class = ClienteSerializer
+    
 
 def criar_cartao_credito(request):
     sorteio_senha_cartao = SorteioUnico(1000, 9999)

@@ -54,7 +54,7 @@ class ClienteConta(models.Model):
     num_conta = models.IntegerField()
     agencia = models.CharField(max_length=4, default='0001')
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_criacao = models.DateField(auto_now_add=True)
     
     def __str__(self):
         return self.num_conta
@@ -126,15 +126,19 @@ def criar_carta_debito(sender, instance, created, **kwargs):
     if created:
         sorteio_senha_cartao = SorteioUnico(1000, 9999)
         sorteio_cvv = SorteioUnico(100, 999)
+        sorteio_num_cartao = SorteioUnico(10000000, 99999999)
         
-        num_cartao_debito = 1231586478946658
+        num_cartao_debito = sorteio_num_cartao.sortear_numero()
         ativo = True
         senha_debito = sorteio_senha_cartao.sortear_numero()
         cvv_debito = sorteio_cvv.sortear_numero()
+        min_cartao = '56214584'
+        num_cartao_str = str(num_cartao_debito)
+        num_cartao_debito_str = (f'{min_cartao}'+ f'{num_cartao_str}')
         
         CartaoDebito.objects.create(
             id_cliente_conta = instance,
-            num_cartao_debito = num_cartao_debito,
+            num_cartao_debito = num_cartao_debito_str,
             ativo = ativo,
             senha_debito = senha_debito,
             cvv_debito = cvv_debito
