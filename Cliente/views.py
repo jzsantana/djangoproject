@@ -28,9 +28,9 @@ class ClienteViewSet(viewsets.ModelViewSet):
 def criar_cartao_credito(request):
     sorteio_senha_cartao = SorteioUnico(1000, 9999)
     sorteio_cvv = SorteioUnico(100, 999)
-    sorteio_num_cartao = SorteioUnico(1000000000000000, 9999999999999999)
+    num_cartao_credito= str(random.randint(1000000000000000, 9999999999999998))
     
-    num_cartao_credito = sorteio_num_cartao.sortear_numero()
+    # num_cartao_credito = sorteio_num_cartao.sortear_numero()
     senha_credito = sorteio_senha_cartao.sortear_numero()
     cvv_credito = sorteio_cvv.sortear_numero()
     

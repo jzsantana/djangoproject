@@ -8,7 +8,7 @@ import random
 
 class SorteioUnico:
     def __init__(self, inicio, fim):
-        self.range = set(range(inicio, fim + 1))
+        self.range = list(range(inicio, fim + 1))
 
     def sortear_numero(self):
         if not self.range:
@@ -51,7 +51,7 @@ class Cliente(models.Model):
 
 class ClienteConta(models.Model):
     id_cliente = models.ForeignKey(Cliente, editable=False, on_delete=models.CASCADE)
-    num_conta = models.IntegerField()
+    num_conta = models.CharField(max_length=6)
     agencia = models.CharField(max_length=4, default='0001')
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     data_criacao = models.DateField(auto_now_add=True)
@@ -65,7 +65,7 @@ class CartaoDebito(models.Model):
     id_cliente_conta = models.ForeignKey(ClienteConta, editable=False, on_delete=models.CASCADE)
     ativo = models.BooleanField()
     senha_debito = models.IntegerField()
-    cvv_debito = models.IntegerField()
+    cvv_debito = models.CharField(max_length=3)
     # vencimento??
     # nome impresso no cartao??
     
@@ -79,7 +79,7 @@ class CartaoCredito(models.Model):
     ativo = models.BooleanField()
     senha_credito = models.CharField(max_length=6, default=True)
     limite = models.DecimalField(max_digits=10, decimal_places=2)
-    cvv_credito = models.IntegerField(default=True)
+    cvv_credito = models.CharField(max_length=3)
     
     def __str__(self):
         return self.num_cartao_credito
@@ -126,19 +126,15 @@ def criar_carta_debito(sender, instance, created, **kwargs):
     if created:
         sorteio_senha_cartao = SorteioUnico(1000, 9999)
         sorteio_cvv = SorteioUnico(100, 999)
-        sorteio_num_cartao = SorteioUnico(10000000, 99999999)
-        
-        num_cartao_debito = sorteio_num_cartao.sortear_numero()
+        num_cartao_debito= str(random.randint(1000000000000000, 9999999999999998))
+    
         ativo = True
         senha_debito = sorteio_senha_cartao.sortear_numero()
         cvv_debito = sorteio_cvv.sortear_numero()
-        min_cartao = '56214584'
-        num_cartao_str = str(num_cartao_debito)
-        num_cartao_debito_str = (f'{min_cartao}'+ f'{num_cartao_str}')
         
         CartaoDebito.objects.create(
             id_cliente_conta = instance,
-            num_cartao_debito = num_cartao_debito_str,
+            num_cartao_debito = num_cartao_debito,
             ativo = ativo,
             senha_debito = senha_debito,
             cvv_debito = cvv_debito
