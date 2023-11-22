@@ -22,7 +22,6 @@ class ClienteContaSerializer(serializers.ModelSerializer):
             'data_criacao'
         )
     
-
         
 class CartaoDebitoSerializer(serializers.ModelSerializer):
     class Meta:

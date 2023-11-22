@@ -1,9 +1,11 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from datetime import datetime
-# from .views import SorteioUnico
 import random
+
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
 class SorteioUnico:
@@ -17,6 +19,21 @@ class SorteioUnico:
         numero_sorteado = random.choice(list(self.range))
         self.range.remove(numero_sorteado)
         return numero_sorteado
+
+
+class ManagerUser(BaseUserManager):
+    # isso significa que ele realmente vai estar no bd, ou seja, ele vai ser uma tabela no bd
+    use_in_migration = True
+    
+    def _create_user(self, email, password, **extra_fields):
+        if not account_number:
+            raise ValueError('The account number is mandatory')
+        bank_branch = self.normalize_bank_branch(bank_branch)
+        
+    
+
+class User(AbstractUser):
+    ...
 
 
 # Create your models here.
