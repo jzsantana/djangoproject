@@ -12,11 +12,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
     
 
-# class ClienteViewSet(viewsets.ModelViewSet):
-#     queryset =  Cliente.objects.all()
-#     serializer_class = ClienteSerializer
-    
-
 class AccountCustomerViewSet(viewsets.ModelViewSet):
     queryset = AccountCustomer.objects.all()
     serializer_class = AccountCustomerSerializer

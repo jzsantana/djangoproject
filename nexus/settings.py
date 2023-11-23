@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'Cliente',
     'stdimage',
     'django_filters',
+    'djoser',
 ]
 
 AUTH_USER_MODEL = 'Cliente.Customer'

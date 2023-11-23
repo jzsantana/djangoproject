@@ -94,7 +94,7 @@ class Customer(AbstractBaseUser):
         'uf',
         'address',
         'neighborhood',
-        'house_num'
+        'house_num',
     ]
     
     def __str__(self):
@@ -228,4 +228,3 @@ def criar_cartao_debito(sender, instance, created, **kwargs):
             debit_cvv = cvv_debito
         )
     
-
