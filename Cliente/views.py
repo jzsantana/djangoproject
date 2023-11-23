@@ -39,12 +39,12 @@ def criar_cartao_credito(request):
     
     if conta_cliente.saldo >= 1100:
         CartaoCredito.objects.create(
-            num_cartao_credito = num_cartao_credito,
+            credit_card_number = num_cartao_credito,
             id_cliente_conta = conta_cliente,
-            senha_credito = senha_credito,
+            credit_password = senha_credito,
             limite = limite,
-            ativo = True,
-            cvv_credito = cvv_credito
+            active = True,
+            credit_cvv = cvv_credito
         )
     ...
     

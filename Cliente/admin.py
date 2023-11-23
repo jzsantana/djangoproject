@@ -1,24 +1,30 @@
 from django.contrib import admin
 
-from .models import Cliente, ClienteConta, CartaoDebito, CartaoCredito
+from .models import Cliente, AccountCustomer, DebitCard, CreditCard
+from .models import Customer
 
 # Register your models here.
-@admin.register(Cliente)
-class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('id' ,'nome', 'tipo_conta')
-    # ESSE LIST DISPLAY VAI TER OS CAMPOS QUE SERAO EXIBIDOS NA PAGINA DE ADMIN
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email')
+
+
+# @admin.register(Cliente)
+# class ClienteAdmin(admin.ModelAdmin):
+#     list_display = ('id' ,'nome', 'tipo_conta')
+#     # ESSE LIST DISPLAY VAI TER OS CAMPOS QUE SERAO EXIBIDOS NA PAGINA DE ADMIN
     
     
-@admin.register(ClienteConta)
-class ClienteContaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_cliente','num_conta', 'agencia', 'saldo', 'data_criacao')
+@admin.register(AccountCustomer)
+class AccountCustomer(admin.ModelAdmin):
+    list_display = ('id', 'id_cliente','account_number', 'agency', 'saldo', 'creation_date')
     
     
-@admin.register(CartaoDebito)
-class CartaoDebitoAdmin(admin.ModelAdmin):
-    list_display = ('num_cartao_debito', 'ativo')
+@admin.register(DebitCard)
+class DebitCardAdmin(admin.ModelAdmin):
+    list_display = ('debit_card_number', 'active', 'id_cliente_conta')
     
     
-@admin.register(CartaoCredito)
-class CartaoCreditoAdmin(admin.ModelAdmin):
-    list_display = ('num_cartao_credito', 'ativo', 'id_cliente_conta')
+@admin.register(CreditCard)
+class CreditCardAdmin(admin.ModelAdmin):
+    list_display = ('credit_card_number', 'active', 'id_cliente_conta')

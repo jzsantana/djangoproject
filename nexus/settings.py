@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'django_filters',
 ]
 
+AUTH_USER_MODEL = 'Cliente.Customer'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -132,6 +135,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
+    'DATE_FORMAT': '%d/%m/%y',
+    'DATE_INPUT_FORMATS': [
+      '%d/%m/%y'  
+    ],
+    
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
