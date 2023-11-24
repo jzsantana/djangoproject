@@ -1,11 +1,12 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from nexus import settings
 from datetime import datetime
 import random
 
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.base_user import BaseUserManager
 
 
 class SorteioUnico:
@@ -23,26 +24,31 @@ class SorteioUnico:
 
 class ManagerUser(BaseUserManager):
     # isso significa que ele realmente vai estar no bd, ou seja, ele vai ser uma tabela no bd
-    use_in_migrations = True
+    # use_in_migrations = True
     
     # responsavel por salvar tanto o usuario comum quanto o usuario admin
-    def _create_user(self, email, cpf, password, **extra_fields):
+    def create_user(self, email, cpf, password=None, **extra_fields):
         if not email:
-            raise ValueError('The account number is mandatory')
+            raise ValueError('The email is mandatory')
+        if not cpf:
+            raise ValueError('The cpf is mandatory')
+        
         email = self.normalize_email(email)
         user = self.model(email=email, cpf=cpf, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save(using=self.db)
+        
         return user
     
     
-    def create_user(self, email, cpf,password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, cpf,password, **extra_fields)
+    # def create_user(self, email, cpf, password=None, **extra_fields):
+    #     extra_fields.setdefault('is_staff', True)
+    #     extra_fields.setdefault('is_superuser', False)
+        
+    #     return self._create_user(email, cpf, password, **extra_fields)
     
     
-    def create_superuser(self, email, cpf, password, **extra_fields):
+    def create_superuser(self, email, cpf, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)
         
@@ -52,7 +58,7 @@ class ManagerUser(BaseUserManager):
         if extra_fields.get('is_staff') is not True:
             raise ValueError('SuperUser precisa ter is_staff')
         
-        return self._create_user(email, cpf, password, **extra_fields)
+        return self.create_user(email, cpf, password, **extra_fields)
         
     
 # CustomUser
@@ -69,7 +75,7 @@ class Customer(AbstractBaseUser):
     email = models.CharField('E-mail', max_length=180)
     name = models.CharField(max_length=255)
     cpf = models.CharField(max_length=11, unique=True)
-    date_birth = models.DateField()
+    date_birth = models.DateField(null=False, blank=False)
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE_CHOICES)
     telephone = models.CharField(max_length=11)
     cep = models.CharField(max_length=8)
@@ -78,7 +84,6 @@ class Customer(AbstractBaseUser):
     address = models.CharField(max_length=255)
     neighborhood = models.CharField(max_length=80)
     house_num = models.CharField(max_length=6)
-    # password = models.CharField(max_length=8)
     is_staff = models.BooleanField(default=True) 
     is_superuser = models.BooleanField(default=False)
     
@@ -97,46 +102,23 @@ class Customer(AbstractBaseUser):
         'house_num',
     ]
     
+    
     def __str__(self):
         return self.cpf
     
+    class Meta:
+        verbose_name = 'Customer'
+        verbose_name_plural = 'Customers'
+    
     objects = ManagerUser()
+    
     
     def has_module_perms(self, app_label):
         return True
     
+    
     def has_perm(self, perm, obj=None):
         return self.is_superuser
-
-
-# Create your models here.
-class Cliente(models.Model):
-    PJ = "PESSOA JURIDICA"
-    PF = "PESSOA FISICA"
-    
-    TIPO_CONTA_CHOICES = [
-        ('PF', PF),
-        ('PJ', PJ),
-    ]
-    
-    nome = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=11)
-    data_nascimento = models.DateField()
-    tipo_conta = models.CharField(max_length=20, choices=TIPO_CONTA_CHOICES)
-    telefone = models.CharField(max_length=11)
-    cep = models.CharField(max_length=8, default="")
-    cidade = models.CharField(max_length=80, default="")
-    uf = models.CharField(max_length=2, default="")
-    endereco = models.CharField(max_length=255, default="")
-    bairro = models.CharField(max_length=80, default="")
-    num_casa = models.CharField(max_length=6, default=None)
-    senha = models.CharField(max_length=8)
-    
-    # a pi tem que retornar um amensgame caso o cliente faça uma transferencia 
-    # com valor acima do que há na conta
-    
-    def __str__(self):
-        return self.nome
 
 
 class AccountCustomer(models.Model):
@@ -145,6 +127,7 @@ class AccountCustomer(models.Model):
     agency = models.CharField(max_length=4, default='0001')
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     creation_date = models.DateField(auto_now_add=True)
+    # account_password = models.CharField(Customer.password)
 
 
     def __str__(self):
@@ -192,6 +175,7 @@ class Movimentacao(models.Model):
     id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     tipo_movimentacao = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
+    # id_cliente_conta_receiver = models.ForeignKey(AccountCustomer)
     
     
 class Investimento(models.Model):

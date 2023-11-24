@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Cliente.viewset import CustomerViewSet
+# from Cliente.viewset import CustomerViewSet
 from Cliente.urls import router
 # from rest_framework.routers import DefaultRouter
 # from Cliente.urls import router
@@ -25,5 +25,6 @@ from Cliente.urls import router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
+    path('auth/', include('djoser.urls')) 
     # path('api/v1', include('Cliente.urls')),
 ]

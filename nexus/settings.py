@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "rest_framework.authtoken",
     'Cliente',
     'stdimage',
     'django_filters',
     'djoser',
 ]
+
+
 
 AUTH_USER_MODEL = 'Cliente.Customer'
 
@@ -134,16 +137,12 @@ MEDIA_ROOT = Path(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 REST_FRAMEWORK = {
-    'DATE_FORMAT': '%d/%m/%y',
-    'DATE_INPUT_FORMATS': [
-      '%d/%m/%y'  
-    ],
+    "DATE_FORMAT":"%d/%m/%Y",
+    'DATE_INPUT_FORMATS':["%d/%m/%Y"],
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
@@ -161,3 +160,4 @@ REST_FRAMEWORK = {
     #     'user':'10/minute'
     # },
 }
+

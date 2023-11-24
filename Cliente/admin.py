@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cliente, AccountCustomer, DebitCard, CreditCard
+from .models import AccountCustomer, DebitCard, CreditCard
 from .models import Customer
 
 # Register your models here.
