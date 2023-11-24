@@ -161,20 +161,25 @@ class Transaction(models.Model):
     PIX = "PIX"
     TRANSFERENCIA = "Transferência"
     DEPOSITO = "Depósito"
+    DEBITO = "Débito"
     
     MOVIMENTACAO_CHOICES = [
         ('PIX', PIX),
         ('TRANSFERENCIA', TRANSFERENCIA),
-        ('DEPOSITO', DEPOSITO)
+        ('DEPOSITO', DEPOSITO),
+        ('DEBITO', DEBITO)
     ]
     
     id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
-    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
-    
-    
-class Investimento(models.Model):
-    
+    conta_receiver = models.IntegerField(default=0)
+
+# emprestimo
+class Loan(models.Model):
+    id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
+    valor_solicitado = models.DecimalField(max_digits=10, decimal_places=2)
+    parcelas = models.IntegerField(default=0)
     ...
     
 
