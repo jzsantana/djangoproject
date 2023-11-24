@@ -1,10 +1,7 @@
 from rest_framework import viewsets
-# from rest_framework import serializers
-# from Cliente.models import Cliente, CartaoDebito
 from rest_framework import filters
-from Cliente.serializers import DebitCardSerializer, AccountCustomerSerializer
-# # from django_filters.rest_framework import DjangoFilterBackend
-from Cliente.models import  AccountCustomer, DebitCard
+from Cliente.serializers import DebitCardSerializer, AccountCustomerSerializer, CreditCardSerializer, TransactionSerializer
+from Cliente.models import  AccountCustomer, DebitCard, CreditCard, Transaction
 
 
 # class CustomerViewSet(viewsets.ModelViewSet):
@@ -20,5 +17,15 @@ class AccountCustomerViewSet(viewsets.ModelViewSet):
 class DebitCardViewSet(viewsets.ModelViewSet):
     queryset = DebitCard.objects.all()
     serializer_class = DebitCardSerializer
+    
+
+class CreditCardViewSet(viewsets.ModelViewSet):
+    queryset = CreditCard.objects.all()
+    serializer_class = CreditCardSerializer
+    
+
+class TransactionViewSet(viewsets.ModelViewSet):
+    queryset = Transaction
+    serializer_class = TransactionSerializer
     
     

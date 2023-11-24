@@ -1,8 +1,6 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from nexus import settings
-from datetime import datetime
 import random
 
 from django.contrib.auth.models import AbstractBaseUser
@@ -127,7 +125,6 @@ class AccountCustomer(models.Model):
     agency = models.CharField(max_length=4, default='0001')
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     creation_date = models.DateField(auto_now_add=True)
-    # account_password = models.CharField(Customer.password)
 
 
     def __str__(self):
@@ -140,16 +137,15 @@ class DebitCard(models.Model):
     active = models.BooleanField(default=True)
     debit_password = models.CharField(max_length=4)
     debit_cvv = models.CharField(max_length=3)
-    # vencimento??
-    # nome impresso no cartao??
+
     
     def __str__(self):
         return self.num_cartao_debito
 
 
 class CreditCard(models.Model):
-    credit_card_number = models.CharField(max_length=16, default=True)
     id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
+    credit_card_number = models.CharField(max_length=16, default=True)
     active = models.BooleanField()
     credit_password = models.CharField(max_length=6, default=True)
     limite = models.DecimalField(max_digits=10, decimal_places=2)
@@ -160,7 +156,7 @@ class CreditCard(models.Model):
         return self.num_cartao_credito
 
 
-class Movimentacao(models.Model):
+class Transaction(models.Model):
     
     PIX = "PIX"
     TRANSFERENCIA = "Transferência"
@@ -174,8 +170,7 @@ class Movimentacao(models.Model):
     
     id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    tipo_movimentacao = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
-    # id_cliente_conta_receiver = models.ForeignKey(AccountCustomer)
+    transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
     
     
 class Investimento(models.Model):

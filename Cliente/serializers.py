@@ -1,8 +1,5 @@
 from rest_framework import serializers
-# from .models import Cliente, CartaoCredito, CartaoDebito
-from .models import AccountCustomer, DebitCard, CreditCard, Customer
-from datetime import datetime
-# from Cliente import models
+from .models import AccountCustomer, DebitCard, CreditCard, Customer, Transaction
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -26,12 +23,6 @@ class CustomerSerializer(serializers.ModelSerializer):
                 ]
         
 
-# class ClienteSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Cliente
-#         fields = '__all__'
-        
-        
 class AccountCustomerSerializer(serializers.ModelSerializer):
     id_cliente = CustomerSerializer()
 
@@ -57,4 +48,9 @@ class CreditCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditCard
         fields = '__all__'
-                
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = '__all__'
