@@ -70,13 +70,7 @@ class MakeTransaction(APIView):
             
         return JsonResponse({'message': 'Transação realizada com sucesso.'})
     
-    
-    # def get(self, request):
-    #     transactions = Transaction.objects.all()
-    #     serializer = TransactionSerializer(transactions, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+    # basicamente, se voce passar o id voce pega uma movimentacao especifica, senao ele pega e retorna todas as movimentações
     def get(self, request, transaction_id=None):
         if transaction_id is not None:
             transaction = get_object_or_404(Transaction, id=transaction_id)
@@ -88,29 +82,35 @@ class MakeTransaction(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     
-    
+class CreateCreditCard(APIView):
+    def post(self, request):
+        sorteio_senha_cartao = SorteioUnico(1000, 9999)
+        sorteio_cvv = SorteioUnico(100, 999)
+        num_cartao_credito= str(random.randint(1000000000000000, 9999999999999998))
+        
+        # num_cartao_credito = sorteio_num_cartao.sortear_numero()
+        senha_credito = sorteio_senha_cartao.sortear_numero()
+        cvv_credito = sorteio_cvv.sortear_numero()
+        
+        cliente_id = request.data.get('cliente_id')
+        conta_cliente = get_object_or_404(AccountCustomer, id=cliente_id)
 
-def criar_cartao_credito(request):
-    sorteio_senha_cartao = SorteioUnico(1000, 9999)
-    sorteio_cvv = SorteioUnico(100, 999)
-    num_cartao_credito= str(random.randint(1000000000000000, 9999999999999998))
-    
-    # num_cartao_credito = sorteio_num_cartao.sortear_numero()
-    senha_credito = sorteio_senha_cartao.sortear_numero()
-    cvv_credito = sorteio_cvv.sortear_numero()
-    
-    conta_cliente = AccountCustomer
-    limite = conta_cliente.saldo * 0.08
-    
-    if conta_cliente.saldo >= 1100:
-        CreditCard.objects.create(
-            credit_card_number = num_cartao_credito,
-            id_cliente_conta = conta_cliente,
-            credit_password = senha_credito,
-            limite = limite,
-            active = True,
-            credit_cvv = cvv_credito
-        )
-    ...
+
+        limite = cliente_id.saldo * 0.08
+        
+        if conta_cliente.saldo >= 1100:
+            CreditCard.objects.create(
+                credit_card_number = num_cartao_credito,
+                id_cliente_conta = conta_cliente,
+                credit_password = senha_credito,
+                limite = limite,
+                active = True,
+                credit_cvv = cvv_credito
+            )
+
+
+# def criar_cartao_credito(request):
+   
+#     ...
     
     

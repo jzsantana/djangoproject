@@ -144,7 +144,7 @@ class DebitCard(models.Model):
 
 
 class CreditCard(models.Model):
-    id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
+    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
     credit_card_number = models.CharField(max_length=16, default=True)
     active = models.BooleanField()
     credit_password = models.CharField(max_length=6, default=True)
