@@ -25,6 +25,8 @@ from Cliente.urls import router
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
-    path('auth/', include('djoser.urls')) 
+    path('api/v1/', include('Cliente.urls')),
+    path('auth/', include('djoser.urls')) ,
+    
     # path('api/v1', include('Cliente.urls')),
 ]

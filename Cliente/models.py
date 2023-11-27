@@ -123,7 +123,7 @@ class AccountCustomer(models.Model):
     id_cliente = models.ForeignKey(Customer, editable=False, on_delete=models.CASCADE)
     account_number = models.CharField(max_length=6)
     agency = models.CharField(max_length=4, default='0001')
-    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2)
     creation_date = models.DateField(auto_now_add=True)
 
 
@@ -161,19 +161,18 @@ class Transaction(models.Model):
     PIX = "PIX"
     TRANSFERENCIA = "Transferência"
     DEPOSITO = "Depósito"
-    DEBITO = "Débito"
     
     MOVIMENTACAO_CHOICES = [
         ('PIX', PIX),
         ('TRANSFERENCIA', TRANSFERENCIA),
-        ('DEPOSITO', DEPOSITO),
-        ('DEBITO', DEBITO)
-    ]
+        ('DEPOSITO', DEPOSITO)
+        ]
     
-    id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
+    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transaction_sender')
     valor = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
-    conta_receiver = models.IntegerField(default=0)
+    conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transactions_received' )
+    timestamp = models.DateField(auto_now_add=True)
 
 # emprestimo
 class Loan(models.Model):

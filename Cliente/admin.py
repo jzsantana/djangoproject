@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AccountCustomer, DebitCard, CreditCard
+from .models import AccountCustomer, DebitCard, CreditCard, Transaction
 from .models import Customer
 
 # Register your models here.
@@ -28,3 +28,8 @@ class DebitCardAdmin(admin.ModelAdmin):
 @admin.register(CreditCard)
 class CreditCardAdmin(admin.ModelAdmin):
     list_display = ('credit_card_number', 'active', 'id_cliente_conta')
+    
+    
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('id_cliente_conta', 'valor', 'transaction_type', 'conta_receiver')

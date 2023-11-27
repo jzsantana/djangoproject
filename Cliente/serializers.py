@@ -9,8 +9,9 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = [ 
                 'id',
                 'email',
-                'account_type',
+                'cpf',
                 'name',
+                'account_type',
                 'date_birth',
                 'telephone',
                 'cep',
@@ -18,8 +19,7 @@ class CustomerSerializer(serializers.ModelSerializer):
                 'uf',
                 'address',
                 'neighborhood',
-                'house_num',
-                'cpf'
+                'house_num'
                 ]
         
 
@@ -51,6 +51,16 @@ class CreditCardSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    
+    id_cliente_conta = AccountCustomerSerializer()
+    
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = (
+                    'id',
+                    'id_cliente_conta',
+                    'valor',
+                    'transaction_type',
+                    'conta_receiver',
+                    'timestamp'
+                  )
