@@ -123,9 +123,13 @@ class AccountCustomer(models.Model):
     id_cliente = models.ForeignKey(Customer, editable=False, on_delete=models.CASCADE)
     account_number = models.CharField(max_length=6)
     agency = models.CharField(max_length=4, default='0001')
-    saldo = models.DecimalField(max_digits=10, decimal_places=2)
+    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     creation_date = models.DateField(auto_now_add=True)
 
+
+    class Meta:
+         verbose_name = 'Account'
+         verbose_name_plural = 'Accounts'
 
     def __str__(self):
         return self.account_number
@@ -176,7 +180,7 @@ class Transaction(models.Model):
 
 # emprestimo
 class Loan(models.Model):
-    id_cliente_conta = models.ForeignKey(AccountCustomer, editable=False, on_delete=models.CASCADE)
+    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
     valor_solicitado = models.DecimalField(max_digits=10, decimal_places=2)
     parcelas = models.IntegerField(default=0)
     ...
@@ -191,6 +195,7 @@ def create_account(sender, instance, created, **kwargs):
         AccountCustomer.objects.create(
             id_cliente=instance,
             account_number = num_conta,
+            saldo = 100.0
         )
         
         

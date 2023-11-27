@@ -24,7 +24,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         
 
 class AccountCustomerSerializer(serializers.ModelSerializer):
-    id_cliente = CustomerSerializer()
+    id_cliente = CustomerSerializer('id')
 
 
     class Meta:
