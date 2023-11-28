@@ -15,7 +15,7 @@ router.register('credit', CreditCardViewSet)
 
 urlpatterns = [
     path('transaction/', MakeTransaction.as_view(), name='make_transaction'),
-    path('transaction/<int:transaction_id>/', MakeTransaction.as_view(), name='get_detail'),
+    # path('transaction/<int:transaction_id>/', MakeTransaction.as_view(), name='get_detail'),
     path('creditcard/', CreateCreditCard.as_view(), name='create_credit_card'),
 ]
 

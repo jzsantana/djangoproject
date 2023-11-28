@@ -34,8 +34,10 @@ class MakeTransaction(APIView):
     # sender = envia
     # receiver - received - recebe
 
+
     def post(self, request):
         try:
+            print('postei')
             conta_sender = get_object_or_404(AccountCustomer, id=request.data.get('id'))
             valor = request.data.get('valor')
             transaction_type = request.data.get('transaction_type')
