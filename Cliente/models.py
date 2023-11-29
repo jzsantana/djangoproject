@@ -104,9 +104,11 @@ class Customer(AbstractBaseUser):
     def __str__(self):
         return self.cpf
     
+    
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
+    
     
     objects = ManagerUser()
     
@@ -172,10 +174,10 @@ class Transaction(models.Model):
         ('DEPOSITO', DEPOSITO)
         ]
     
-    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transaction_sender')
-    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    id_cliente = models.ForeignKey(AccountCustomer, related_name='transaction_sender', on_delete=models.CASCADE)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
-    conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transactions_received' )
+    conta_receiver = models.ForeignKey(AccountCustomer, related_name='transactions_received', on_delete=models.CASCADE )
     timestamp = models.DateField(auto_now_add=True)
 
 # emprestimo
@@ -195,7 +197,7 @@ def create_account(sender, instance, created, **kwargs):
         AccountCustomer.objects.create(
             id_cliente=instance,
             account_number = num_conta,
-            saldo = 100.0
+            saldo=0.0
         )
         
         

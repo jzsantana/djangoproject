@@ -3,7 +3,6 @@ from rest_framework import filters
 from Cliente.serializers import DebitCardSerializer, AccountCustomerSerializer, CreditCardSerializer, TransactionSerializer, CustomerSerializer
 from Cliente.models import  AccountCustomer, DebitCard, CreditCard, Transaction, Customer
 
-
 # class CustomerViewSet(viewsets.ModelViewSet):
 #     queryset = Customer.objects.all()
 #     serializer_class = CustomerSerializer
@@ -25,6 +24,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
     
 
 class TransactionViewSet(viewsets.ModelViewSet):
+    
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     
