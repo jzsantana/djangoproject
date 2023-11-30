@@ -45,7 +45,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
             conta_sender = get_object_or_404(AccountCustomer, id=conta_sender_id)
 
             conta_receiver_id = request.data.get('conta_receiver')
-            conta_receiver = get_object_or_404(AccountCustomer, id=conta_receiver_id)
+            conta_received = get_object_or_404(AccountCustomer, id=conta_receiver_id)
 
             # if conta_sender.saldo < valor:
             #      return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
@@ -55,13 +55,13 @@ class TransactionViewSet(viewsets.ModelViewSet):
                     id_cliente=conta_sender,
                     valor=valor,
                     transaction_type=type_transaction,
-                    conta_receiver=conta_receiver
+                    conta_receiver=conta_received
                 ) 
                 
                 conta_sender.saldo -= valor
                 conta_sender.save()
-                conta_receiver.saldo += valor
-                conta_receiver.save()
+                conta_received.saldo += valor
+                conta_received.save()
                 
                 return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
             
@@ -85,7 +85,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                     id_cliente_conta = conta_sender,
                     valor = valor,
                     transaction_type = type_transaction,
-                    conta_receiver = conta_sender
+                    conta_received = conta_sender
                 )
                 
                 # update_saldo_deposito(conta_sender, conta_received, valor)
