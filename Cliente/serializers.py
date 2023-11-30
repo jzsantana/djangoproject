@@ -24,12 +24,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         
 
 class AccountCustomerSerializer(serializers.ModelSerializer):
-    id_cliente = CustomerSerializer('id')
-
-
     class Meta:
         model = AccountCustomer
         fields = (
+            'id',
             'id_cliente',
             'account_number',
             'agency',
@@ -52,13 +50,11 @@ class CreditCardSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     
-    id_cliente_conta = AccountCustomerSerializer()
-    
     class Meta:
         model = Transaction
         fields = (
                     'id',
-                    'id_cliente_conta',
+                    'id_cliente',
                     'valor',
                     'transaction_type',
                     'conta_receiver',

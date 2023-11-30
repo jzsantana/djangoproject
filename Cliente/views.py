@@ -30,29 +30,32 @@ def update_saldo_deposito(instance, instancia,valor):
         
     return f'update feito'              
 
-class MakeTransaction(APIView):
+class TransactionViewSet(viewsets.ModelViewSet):
     # sender = envia
     # receiver - received - recebe
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
 
-
-    def post(self, request):
+    def create(self, request):
         try:
             print('postei')
-            conta_sender = get_object_or_404(AccountCustomer, id=request.data.get('id'))
+            # conta_sender = get_object_or_404(AccountCustomer, id=request.data.get('id'))
+            conta_sender = request.data.get('id_cliente_conta')
             valor = request.data.get('valor')
-            transaction_type = request.data.get('transaction_type')
-            conta_received = get_object_or_404(AccountCustomer, id=request.data.get('id'))        
+            type_transaction = request.data.get('transaction_type')
+            # conta_received = get_object_or_404(AccountCustomer, id=request.data.get('id'))        
+            conta_received = request.data.get('conta_receiver')        
             
             if conta_sender.saldo < valor:
                  return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
             
-            if Transaction.transaction_type in ["PIX", "TRANSFERENCIA"]:
+            if type_transaction in ["PIX", "TRANSFERENCIA"]:
                 Transaction.objects.create(
                     id_cliente_conta=conta_sender,
                     valor=valor,
-                    transaction_type=transaction_type,
+                    transaction_type=type_transaction,
                     conta_receiver=conta_received
-                )
+                ) 
                 
                 conta_sender.saldo -= valor
                 conta_sender.save()
@@ -61,11 +64,11 @@ class MakeTransaction(APIView):
                 
                 return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
 
-            elif Transaction.transaction_type == "DEPOSITO":
+            elif type_transaction in ['DEPOSITO']:
                 transaction = Transaction.objects.create(
                     id_cliente_conta = conta_sender,
                     valor = valor,
-                    transaction_type = transaction_type,
+                    transaction_type = type_transaction,
                     conta_receiver = conta_sender
                 )
                 
@@ -78,8 +81,9 @@ class MakeTransaction(APIView):
                 return JsonResponse({'message': 'Deposito realizado com sucesso.'})
         
             return JsonResponse({'message': 'Transação realizada com sucesso.'})
-        except:
-            return JsonResponse({'erro': 'Nao foi possivel fazer a transação'})
+        except ValueError as v:
+            return JsonResponse({'erro': f'Nao foi possivel fazer a transação {v}',})
+        
         
         # basicamente, se voce passar o id voce pega uma movimentacao especifica, senao ele pega e retorna todas as movimentações
     def get(self, request, transaction_id=None):
@@ -94,7 +98,7 @@ class MakeTransaction(APIView):
 
     
 class CreateCreditCard(APIView):
-    def post(self, request):
+    def create(self, request):
         sorteio_senha_cartao = SorteioUnico(1000, 9999)
         sorteio_cvv = SorteioUnico(100, 999)
         num_cartao_credito= str(random.randint(1000000000000000, 9999999999999998))
@@ -119,8 +123,7 @@ class CreateCreditCard(APIView):
             )
 
 
-# def criar_cartao_credito(request):
-   
-#     ...
-    
+class MakeLoan(APIView):
+    def post(self, required):
+        ...
     
