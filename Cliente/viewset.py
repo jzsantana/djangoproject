@@ -36,6 +36,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
         conta_cliente = get_object_or_404(AccountCustomer, id=cliente_id)
 
         limite = cliente_id.saldo * 0.08
+        Decimal(limite)
         
         if conta_cliente.saldo >= 1100:
             CreditCard.objects.create(
