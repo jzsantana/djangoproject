@@ -1,104 +1,89 @@
-# from django.contrib import messages
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
-# from .api.serializers import ClienteSerializer
-# from django.contrib.auth.decorators import login_required
-# from datetime import datetime
-
 from django.shortcuts import render
 from Cliente.models import  AccountCustomer, CreditCard, Transaction, SorteioUnico
 import random
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from django.http import JsonResponse
-
-# from rest_framework import serializers
-# from Cliente.models import Cliente
 from rest_framework import filters
-# from Cliente.serializers import ClienteSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from Cliente.serializers import TransactionSerializer
-
+# from Cliente.serializers import TransactionSerializer
 
 # class ClienteViewSet(viewsets.ModelViewSet):
 #     queryset =  Cliente.objects.all()
 #     serializer_class = ClienteSerializer
            
 
-class TransactionViewSet(viewsets.ModelViewSet):
+class Transaction(APIView):
     # sender = envia
     # receiver - received - recebe
 
-    queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer
-    
-    def create(self, request):
-        try:
-            print('postei')
-            # conta_sender = request.data.get(AccountCustomer.id_cliente)
-            valor = request.data.get('valor')
-            type_transaction = request.data.get('transaction_type')        
-            # conta_receiver = request.data.get('conta_receiver')
+    # def create(self, request):
+    #     try:
+    #         print('postei')
+    #         # conta_sender = request.data.get(AccountCustomer.id_cliente)
+    #         valor = request.data.get('valor')
+    #         type_transaction = request.data.get('transaction_type')        
+    #         # conta_receiver = request.data.get('conta_receiver')
             
-            conta_sender_id = request.data.get('conta_sender')
-            conta_sender = get_object_or_404(AccountCustomer, id=conta_sender_id)
+    #         conta_sender_id = request.data.get('conta_sender')
+    #         conta_sender = get_object_or_404(AccountCustomer, id=conta_sender_id)
 
-            conta_receiver_id = request.data.get('conta_receiver')
-            conta_received = get_object_or_404(AccountCustomer, id=conta_receiver_id)
+    #         conta_receiver_id = request.data.get('conta_receiver')
+    #         conta_received = get_object_or_404(AccountCustomer, id=conta_receiver_id)
 
-            # if conta_sender.saldo < valor:
-            #      return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
+    #         # if conta_sender.saldo < valor:
+    #         #      return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
             
-            if type_transaction in ["PIX", "TRANSFERENCIA"]:
-                Transaction.objects.create(
-                    id_cliente=conta_sender,
-                    valor=valor,
-                    transaction_type=type_transaction,
-                    conta_receiver=conta_received
-                ) 
+    #         if type_transaction in ["PIX", "TRANSFERENCIA"]:
+    #             Transaction.objects.create(
+    #                 id_cliente=conta_sender,
+    #                 valor=valor,
+    #                 transaction_type=type_transaction,
+    #                 conta_receiver=conta_received
+    #             ) 
                 
-                conta_sender.saldo -= valor
-                conta_sender.save()
-                conta_received.saldo += valor
-                conta_received.save()
+    #             conta_sender.saldo -= valor
+    #             conta_sender.save()
+    #             conta_received.saldo += valor
+    #             conta_received.save()
                 
-                return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+    #             return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
             
-            # if Transaction.transaction_type in ["PIX", "TRANSFERENCIA"]:
-            #     Transaction.objects.create(
-            #         id_cliente_conta=conta_sender,
-            #         valor=valor,
-            #         transaction_type=type_transaction,
-            #         conta_receiver=conta_received
-            #     ) 
+    #         # if Transaction.transaction_type in ["PIX", "TRANSFERENCIA"]:
+    #         #     Transaction.objects.create(
+    #         #         id_cliente_conta=conta_sender,
+    #         #         valor=valor,
+    #         #         transaction_type=type_transaction,
+    #         #         conta_receiver=conta_received
+    #         #     ) 
                 
-            #     conta_sender.saldo -= valor
-            #     conta_sender.save()
-            #     conta_received.saldo += valor
-            #     conta_received.save()
+    #         #     conta_sender.saldo -= valor
+    #         #     conta_sender.save()
+    #         #     conta_received.saldo += valor
+    #         #     conta_received.save()
                 
-            #     return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+    #         #     return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
 
-            elif type_transaction in ['DEPOSITO']:
-                transaction = Transaction.objects.create(
-                    id_cliente_conta = conta_sender,
-                    valor = valor,
-                    transaction_type = type_transaction,
-                    conta_received = conta_sender
-                )
+    #         elif type_transaction in ['DEPOSITO']:
+    #             transaction = Transaction.objects.create(
+    #                 id_cliente_conta = conta_sender,
+    #                 valor = valor,
+    #                 transaction_type = type_transaction,
+    #                 conta_received = conta_sender
+    #             )
                 
-                # update_saldo_deposito(conta_sender, conta_received, valor)
+    #             # update_saldo_deposito(conta_sender, conta_received, valor)
                 
-                conta_received.saldo += transaction.valor
-                conta_sender.saldo.save()
-                conta_received.saldo.save()
+    #             conta_received.saldo += transaction.valor
+    #             conta_sender.saldo.save()
+    #             conta_received.saldo.save()
                 
-                return JsonResponse({'message': 'Deposito realizado com sucesso.'})
+    #             return JsonResponse({'message': 'Deposito realizado com sucesso.'})
         
-            return JsonResponse({'message': 'Transação realizada com sucesso.'})
-        except ValueError as v:
-            return JsonResponse({'erro': f'{v}',})
+    #         return JsonResponse({'message': 'Transação realizada com sucesso.'})
+    #     except ValueError as v:
+    #         return JsonResponse({'erro': f'{v}',})
         
         # basicamente, se voce passar o id voce pega uma movimentacao especifica, senao ele pega e retorna todas as movimentações
     def get(self, request, transaction_id=None):
