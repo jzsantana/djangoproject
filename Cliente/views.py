@@ -8,7 +8,7 @@
 from django.shortcuts import render
 from Cliente.models import  AccountCustomer, CreditCard, Transaction, SorteioUnico
 import random
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from django.http import JsonResponse
 
@@ -24,45 +24,61 @@ from Cliente.serializers import TransactionSerializer
 # class ClienteViewSet(viewsets.ModelViewSet):
 #     queryset =  Cliente.objects.all()
 #     serializer_class = ClienteSerializer
-def update_saldo_deposito(instance, instancia,valor):
-    instance.saldo += instancia.valor
-    instance.save()
-        
-    return f'update feito'              
+           
 
 class TransactionViewSet(viewsets.ModelViewSet):
     # sender = envia
     # receiver - received - recebe
+
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-
+    
     def create(self, request):
         try:
             print('postei')
-            # conta_sender = get_object_or_404(AccountCustomer, id=request.data.get('id'))
-            conta_sender = request.data.get('id_cliente_conta')
+            # conta_sender = request.data.get(AccountCustomer.id_cliente)
             valor = request.data.get('valor')
-            type_transaction = request.data.get('transaction_type')
-            # conta_received = get_object_or_404(AccountCustomer, id=request.data.get('id'))        
-            conta_received = request.data.get('conta_receiver')        
+            type_transaction = request.data.get('transaction_type')        
+            # conta_receiver = request.data.get('conta_receiver')
             
-            if conta_sender.saldo < valor:
-                 return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
+            conta_sender_id = request.data.get('conta_sender')
+            conta_sender = get_object_or_404(AccountCustomer, id=conta_sender_id)
+
+            conta_receiver_id = request.data.get('conta_receiver')
+            conta_receiver = get_object_or_404(AccountCustomer, id=conta_receiver_id)
+
+            # if conta_sender.saldo < valor:
+            #      return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
             
             if type_transaction in ["PIX", "TRANSFERENCIA"]:
                 Transaction.objects.create(
-                    id_cliente_conta=conta_sender,
+                    id_cliente=conta_sender,
                     valor=valor,
                     transaction_type=type_transaction,
-                    conta_receiver=conta_received
+                    conta_receiver=conta_receiver
                 ) 
                 
                 conta_sender.saldo -= valor
                 conta_sender.save()
-                conta_received.saldo += valor
-                conta_received.save()
+                conta_receiver.saldo += valor
+                conta_receiver.save()
                 
                 return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+            
+            # if Transaction.transaction_type in ["PIX", "TRANSFERENCIA"]:
+            #     Transaction.objects.create(
+            #         id_cliente_conta=conta_sender,
+            #         valor=valor,
+            #         transaction_type=type_transaction,
+            #         conta_receiver=conta_received
+            #     ) 
+                
+            #     conta_sender.saldo -= valor
+            #     conta_sender.save()
+            #     conta_received.saldo += valor
+            #     conta_received.save()
+                
+            #     return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
 
             elif type_transaction in ['DEPOSITO']:
                 transaction = Transaction.objects.create(
@@ -82,8 +98,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         
             return JsonResponse({'message': 'Transação realizada com sucesso.'})
         except ValueError as v:
-            return JsonResponse({'erro': f'Nao foi possivel fazer a transação {v}',})
-        
+            return JsonResponse({'erro': f'{v}',})
         
         # basicamente, se voce passar o id voce pega uma movimentacao especifica, senao ele pega e retorna todas as movimentações
     def get(self, request, transaction_id=None):
@@ -126,4 +141,5 @@ class CreateCreditCard(APIView):
 class MakeLoan(APIView):
     def post(self, required):
         ...
+    
     
