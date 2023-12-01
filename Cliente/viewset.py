@@ -24,29 +24,33 @@ class CreditCardViewSet(viewsets.ModelViewSet):
     serializer_class = CreditCardSerializer
     
     def create(self, request):
-        sorteio_senha_cartao = SorteioUnico(1000, 9999)
-        sorteio_cvv = SorteioUnico(100, 999)
+        print('criando cartão')
+        credit = request.data
+        conta_cliente_id = credit["id_cliente_conta"]
+        conta_cliente = AccountCustomer.objects.get(id=conta_cliente_id)
+        
+        sorteio_senha_cartao = SorteioUnico(1000, 9999).sortear_numero()
+        sorteio_cvv = SorteioUnico(100, 999).sortear_numero()
         num_cartao_credito= str(random.randint(1000000000000000, 9999999999999998))
         
-        # num_cartao_credito = sorteio_num_cartao.sortear_numero()
-        senha_credito = sorteio_senha_cartao.sortear_numero()
-        cvv_credito = sorteio_cvv.sortear_numero()
+        senha_credito = sorteio_senha_cartao
+        cvv_credito = sorteio_cvv
         
-        cliente_id = request.data.get('cliente_id')
-        conta_cliente = get_object_or_404(AccountCustomer, id=cliente_id)
-
-        limite = cliente_id.saldo * 0.08
-        Decimal(limite)
+        limite_cliente = conta_cliente.saldo
+        limite = limite_cliente * 4/10
         
         if conta_cliente.saldo >= 1100:
             CreditCard.objects.create(
                 credit_card_number = num_cartao_credito,
                 id_cliente_conta = conta_cliente,
                 credit_password = senha_credito,
-                limite = limite,
+                limite = Decimal(limite),
                 active = True,
                 credit_cvv = cvv_credito
             )
+        else:
+            return JsonResponse({'message': 'Sua solicitação de crédito foi negado pois seu saldo é insuficiente.'})
+
             
     
     def get(self, request, credit_card_id=None):
@@ -76,36 +80,36 @@ class TransactionViewSet(viewsets.ModelViewSet):
             conta_sender = AccountCustomer.objects.get(id=conta_sender_id)
             conta_receiver_id = transaction["conta_receiver"]
             conta_received = AccountCustomer.objects.get(id=conta_receiver_id)
-
-            # if conta_sender.saldo < valor:
-            #      return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
             
             if type_transaction in ["PIX", "TRANSFERENCIA"]:
-                Transaction.objects.create(
-                    id_cliente=conta_sender,
-                    valor=valor,
-                    transaction_type=type_transaction,
-                    conta_receiver=conta_received
-                ) 
-                
-                conta_sender.saldo -= valor
-                conta_sender.save()
-                conta_received.saldo += valor
-                conta_received.save()
-                
-                return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+                if conta_sender.saldo < valor:
+                    return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
+                else:
+                    Transaction.objects.create(
+                        id_cliente=conta_sender,
+                        valor=valor,
+                        transaction_type=type_transaction,
+                        conta_receiver=conta_received
+                    ) 
+                    
+                    conta_sender.saldo -= valor
+                    conta_sender.save()
+                    conta_received.saldo += valor
+                    conta_received.save()
+                    
+                    return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
 
             elif type_transaction in ['DEPOSITO']:
-                transaction = Transaction.objects.create(
-                    id_cliente_conta = conta_sender,
+                deposito = Transaction.objects.create(
+                    id_cliente = conta_sender,
                     valor = valor,
                     transaction_type = type_transaction,
-                    conta_received = conta_sender
+                    conta_receiver = conta_sender
                 )
                 
-                conta_received.saldo += transaction.valor
-                conta_sender.saldo.save()
-                conta_received.saldo.save()
+                deposito.conta_receiver.saldo += valor
+                deposito.conta_receiver.save()
+                # conta_received.save()
                 
                 return JsonResponse({'message': 'Deposito realizado com sucesso.'})
         

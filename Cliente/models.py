@@ -6,6 +6,7 @@ import random
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
 
+# rodar o makemigrations, pois alterei o banco
 
 class SorteioUnico:
     def __init__(self, inicio, fim):
@@ -148,7 +149,9 @@ class DebitCard(models.Model):
 
 
 class CreditCard(models.Model):
-    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
+    # pois o cliente só pode ter um cartao de credito 
+    # entao eu troco o foreign por one to one
+    id_cliente_conta = models.OneToOneField(AccountCustomer, on_delete=models.CASCADE)
     credit_card_number = models.CharField(max_length=16, default=True)
     active = models.BooleanField()
     credit_password = models.CharField(max_length=6, default=True)
@@ -184,7 +187,27 @@ class Loan(models.Model):
     valor_solicitado = models.DecimalField(max_digits=10, decimal_places=2)
     parcelas = models.IntegerField(default=0)
     ...
+
+
+class Extract(models.Model):
     
+    PIX = "PIX"
+    TRANSFERENCIA = "Transferência"
+    DEPOSITO = "Depósito"
+    
+    MOVIMENTACAO_CHOICES = [
+        ('PIX', PIX),
+        ('TRANSFERENCIA', TRANSFERENCIA),
+        ('DEPOSITO', DEPOSITO)
+        ]
+    
+    id_transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    id_cliente = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
+    conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
+
+
 
 @receiver(post_save, sender=Customer)
 def create_account(sender, instance, created, **kwargs):
@@ -200,7 +223,7 @@ def create_account(sender, instance, created, **kwargs):
         
         
 @receiver(post_save, sender=AccountCustomer)
-def criar_cartao_debito(sender, instance, created, **kwargs):
+def create_debit_card(sender, instance, created, **kwargs):
     if created:
         sorteio_senha_cartao = SorteioUnico(1000, 9999)
         sorteio_cvv = SorteioUnico(100, 999)
@@ -215,4 +238,9 @@ def criar_cartao_debito(sender, instance, created, **kwargs):
             debit_password = senha_debito,
             debit_cvv = cvv_debito
         )
-    
+
+
+@receiver(post_save, sender=Transaction)
+def create_extract(sender, instance, created, **kwargs):
+    if created:
+        
