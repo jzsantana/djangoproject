@@ -181,6 +181,7 @@ class Transaction(models.Model):
     conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transaction_received')
     timestamp = models.DateField(auto_now_add=True)
 
+
 # emprestimo
 class Loan(models.Model):
     id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
@@ -206,7 +207,6 @@ class Extract(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
     conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
-
 
 
 @receiver(post_save, sender=Customer)
@@ -242,11 +242,12 @@ def create_debit_card(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Transaction)
 def create_extract(sender, instance, created, **kwargs):
-    if created:
-        Extract.objects.create(
-            id_transaction = instance,
-            id_cliente = instance,
-            valor = instance,
-            transaction_type = instance,
-            conta_receiver = instance
-        )
+    #  criar uma condição para que nao preencha mais de um 
+        if created:
+            Extract.objects.create(
+                id_transaction = instance,
+                id_cliente = instance,
+                valor = instance,
+                transaction_type = instance,
+                conta_receiver = instance
+            )
