@@ -243,4 +243,10 @@ def create_debit_card(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Transaction)
 def create_extract(sender, instance, created, **kwargs):
     if created:
-        
+        Extract.objects.create(
+            id_transaction = instance,
+            id_cliente = instance,
+            valor = instance,
+            transaction_type = instance,
+            conta_receiver = instance
+        )
