@@ -3,7 +3,6 @@ from .models import AccountCustomer, DebitCard, CreditCard, Customer, Transactio
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Customer
         fields = [ 
@@ -23,7 +22,23 @@ class CustomerSerializer(serializers.ModelSerializer):
                 ]
         
 
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = (
+                    'id',
+                    'id_cliente',
+                    'valor',
+                    'transaction_type',
+                    'conta_receiver',
+                    'timestamp'
+                  )
+
+
 class AccountCustomerSerializer(serializers.ModelSerializer):
+
+    transaction_sender = TransactionSerializer('id', many=True, read_only=True)
+
     class Meta:
         model = AccountCustomer
         fields = (
@@ -32,7 +47,8 @@ class AccountCustomerSerializer(serializers.ModelSerializer):
             'account_number',
             'agency',
             'saldo',
-            'creation_date'
+            'creation_date',
+            'transaction_sender'
         )
     
         
@@ -48,15 +64,14 @@ class CreditCardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TransactionSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Transaction
-        fields = (
-                    'id',
-                    'id_cliente',
-                    'valor',
-                    'transaction_type',
-                    'conta_receiver',
-                    'timestamp'
-                  )
+# class ExtractSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Extract
+#         fields = (
+#             'id', 
+#             'id_cliente',
+#             'valor',
+#             'conta_receiver'
+#         )
+
+

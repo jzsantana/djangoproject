@@ -121,7 +121,7 @@ class Customer(AbstractBaseUser):
 
 
 class AccountCustomer(models.Model):
-    id_cliente = models.ForeignKey(Customer, editable=False, on_delete=models.CASCADE)
+    id_cliente = models.ForeignKey(Customer, editable=False, on_delete=models.CASCADE, related_name='ac_customer')
     account_number = models.CharField(max_length=6)
     agency = models.CharField(max_length=4, default='0001')
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
@@ -203,7 +203,7 @@ class Extract(models.Model):
         ]
     
     id_cliente = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='sender')
-    id_transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='id_transacao')
+    id_transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='transacao')
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
     conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='receiver')
@@ -240,14 +240,15 @@ def create_debit_card(sender, instance, created, **kwargs):
         )
 
 
-@receiver(post_save, sender=Transaction)
-def create_extract(sender, instance, created, **kwargs):
-    #  criar uma condição para que nao preencha mais de um 
-        if created:
-            Extract.objects.create(
-                id_transaction = instance,
-                id_cliente = instance.id_cliente,
-                valor = instance.valor,
-                transaction_type = instance.transaction_type,
-                conta_receiver = instance.conta_receiver
-            )
+# @receiver(post_save, sender=Transaction)
+# def create_extract(sender, instance, created, **kwargs):
+#     #  criar uma condição para que nao preencha mais de um 
+#         if created:
+#             Extract.objects.create(
+#                 id_transaction = instance,
+#                 id_cliente = instance.id_cliente,
+#                 valor = instance.valor,
+#                 transaction_type = instance.transaction_type,
+#                 conta_receiver = instance.conta_receiver
+#             )
+

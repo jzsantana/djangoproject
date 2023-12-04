@@ -62,8 +62,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
             transaction = Transaction.objects.all()
             serializer = TransactionSerializer(transaction, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
-    
+         
 
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
@@ -128,4 +127,6 @@ class TransactionViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         
-    
+# class ExtractViewSet(viewsets.ModelViewSet):
+#     queryset = AccountCustomer.objects.all()
+#     serializer_class = ExtractSerializer
