@@ -41,10 +41,10 @@ class ManagerUser(BaseUserManager):
     
     
     # def create_user(self, email, cpf, password=None, **extra_fields):
-    #     extra_fields.setdefault('is_staff', True)
+    #     # extra_fields.setdefault('is_staff', True)
     #     extra_fields.setdefault('is_superuser', False)
         
-    #     return self._create_user(email, cpf, password, **extra_fields)
+    #     return self.create_user(email, cpf, password, **extra_fields)
     
     
     def create_superuser(self, email, cpf, password=None, **extra_fields):
@@ -203,6 +203,7 @@ class Extract(models.Model):
         ]
     
     id_cliente = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='sender')
+    id_transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='id_transacao')
     valor = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=20, choices=MOVIMENTACAO_CHOICES, default=True)
     conta_receiver = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='receiver')
@@ -245,8 +246,8 @@ def create_extract(sender, instance, created, **kwargs):
         if created:
             Extract.objects.create(
                 id_transaction = instance,
-                id_cliente = instance,
-                valor = instance,
-                transaction_type = instance,
-                conta_receiver = instance
+                id_cliente = instance.id_cliente,
+                valor = instance.valor,
+                transaction_type = instance.transaction_type,
+                conta_receiver = instance.conta_receiver
             )
