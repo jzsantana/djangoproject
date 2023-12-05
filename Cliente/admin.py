@@ -34,7 +34,3 @@ class CreditCardAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('id_cliente', 'valor', 'transaction_type', 'conta_receiver')
 
-
-# @admin.register(Extract)
-# class ExtractAdmin(admin.ModelAdmin):
-#     list_display = ('id_transaction', 'id_cliente')
