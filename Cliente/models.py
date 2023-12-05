@@ -1,12 +1,10 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import random
-
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
+import random
 
-# rodar o makemigrations, pois alterei o banco
 
 class SorteioUnico:
     def __init__(self, inicio, fim):
