@@ -233,7 +233,7 @@ def create_debit_card(sender, instance, created, **kwargs):
         cvv_debito = sorteio_cvv.sortear_numero()
         
         DebitCard.objects.create(
-            id_cliente_conta = instance,
+            id_cliente = instance,
             debit_card_number = num_cartao_debito,
             debit_password = senha_debito,
             debit_cvv = cvv_debito

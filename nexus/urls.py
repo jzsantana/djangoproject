@@ -18,9 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 # from Cliente.viewset import CustomerViewSet
 from Cliente.urls import router
-# from rest_framework.routers import DefaultRouter
-# from Cliente.urls import router
-
 from django.urls import re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -46,6 +43,7 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/', include('Cliente.urls')),
     path('auth/', include('djoser.urls')) ,
+    path('auth/', include('djoser.urls.authtoken')) ,
     
     # path('api/v1', include('Cliente.urls')),
 ]
