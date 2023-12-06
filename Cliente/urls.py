@@ -12,6 +12,6 @@ router.register('transaction', TransactionViewSet)
 
 
 urlpatterns = [
-   ...
+ 
 ]
 
