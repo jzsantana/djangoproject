@@ -83,7 +83,7 @@ class Customer(AbstractBaseUser):
     house_num = models.CharField(max_length=6)
     is_staff = models.BooleanField(default=True) 
     is_superuser = models.BooleanField(default=False)
-    profile_picture = models.ImageField(null=True)
+    profile_picture = models.ImageField(upload_to='perfil/')
     
     USERNAME_FIELD = 'cpf'
     REQUIRED_FIELDS = [
@@ -98,6 +98,7 @@ class Customer(AbstractBaseUser):
         'address',
         'neighborhood',
         'house_num',
+        'profile_picture'
     ]
     
     
@@ -148,8 +149,6 @@ class DebitCard(models.Model):
 
 
 class CreditCard(models.Model):
-    # pois o cliente só pode ter um cartao de credito 
-    # entao eu troco o foreign por one to one
     id_cliente_conta = models.OneToOneField(AccountCustomer, on_delete=models.CASCADE)
     credit_card_number = models.CharField(max_length=16, default=True)
     active = models.BooleanField()
@@ -167,11 +166,13 @@ class Transaction(models.Model):
     PIX = "PIX"
     TRANSFERENCIA = "Transferência"
     DEPOSITO = "Depósito"
+    DEBITO = "Débito"
     
     MOVIMENTACAO_CHOICES = [
         ('PIX', PIX),
         ('TRANSFERENCIA', TRANSFERENCIA),
-        ('DEPOSITO', DEPOSITO)
+        ('DEPOSITO', DEPOSITO),
+        ('DEBITO', DEBITO)
         ]
     
     id_cliente = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE, related_name='transaction_sender')
@@ -183,11 +184,11 @@ class Transaction(models.Model):
 
 # emprestimo
 class Loan(models.Model):
-    id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
+    id_cliente = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
     valor_solicitado = models.DecimalField(max_digits=10, decimal_places=2)
     parcelas = models.IntegerField(default=0)
-    aprovado = models.BooleanField()
-    salario = models.DecimalField(max_digits=10, decimal_places=2)
+    aprovado = models.BooleanField(default=False)
+    salario = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
 
 class Extract(models.Model):
@@ -218,7 +219,7 @@ def create_account(sender, instance, created, **kwargs):
         AccountCustomer.objects.create(
             id_cliente=instance,
             account_number = num_conta,
-            saldo = 100.0
+            saldo = 0.0
         )
         
         
@@ -233,22 +234,9 @@ def create_debit_card(sender, instance, created, **kwargs):
         cvv_debito = sorteio_cvv.sortear_numero()
         
         DebitCard.objects.create(
-            id_cliente = instance,
+            id_cliente_conta = instance,
             debit_card_number = num_cartao_debito,
             debit_password = senha_debito,
             debit_cvv = cvv_debito
         )
-
-
-# @receiver(post_save, sender=Transaction)
-# def create_extract(sender, instance, created, **kwargs):
-#     #  criar uma condição para que nao preencha mais de um 
-#         if created:
-#             Extract.objects.create(
-#                 id_transaction = instance,
-#                 id_cliente = instance.id_cliente,
-#                 valor = instance.valor,
-#                 transaction_type = instance.transaction_type,
-#                 conta_receiver = instance.conta_receiver
-#             )
 

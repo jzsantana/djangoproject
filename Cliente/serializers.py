@@ -18,7 +18,8 @@ class CustomerSerializer(serializers.ModelSerializer):
                 'uf',
                 'address',
                 'neighborhood',
-                'house_num'
+                'house_num', 
+                'profile_picture'
                 ]
         
 
@@ -68,15 +69,4 @@ class LoanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
         fields = '__all__'
-
-# class ExtractSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Extract
-#         fields = (
-#             'id', 
-#             'id_cliente',
-#             'valor',
-#             'conta_receiver'
-#         )
-
 

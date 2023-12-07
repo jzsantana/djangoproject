@@ -48,6 +48,7 @@ class CreditCardViewSet(viewsets.ModelViewSet):
                 active = True,
                 credit_cvv = cvv_credito
             )
+            return JsonResponse({'message': 'Cartão aprovado'})
         else:
             return JsonResponse({'message': 'Sua solicitação de crédito foi negado pois seu saldo é insuficiente.'})
 
@@ -73,7 +74,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
             print('postei')
             transaction = request.data
             valor = Decimal(transaction["valor"])
-            type_transaction = transaction["transaction_type"]       
+            type_transaction = transaction["transaction_type"]      
             
             conta_sender_id = transaction["id_cliente"]
             conta_sender = AccountCustomer.objects.get(id=conta_sender_id)
@@ -83,6 +84,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
             if type_transaction in ["PIX", "TRANSFERENCIA"]:
                 if conta_sender.saldo < valor:
                     return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
+                elif conta_sender.saldo == 0:
+                    return JsonResponse({'message': 'Você não tem saldo suficiente para realizar essa transação'})
                 else:
                     Transaction.objects.create(
                         id_cliente=conta_sender,
@@ -108,7 +111,6 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 
                 deposito.conta_receiver.saldo += valor
                 deposito.conta_receiver.save()
-                # conta_received.save()
                 
                 return JsonResponse({'message': 'Deposito realizado com sucesso.'})
         
@@ -127,39 +129,39 @@ class TransactionViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         
-# class ExtractViewSet(viewsets.ModelViewSet):
-#     queryset = AccountCustomer.objects.all()
-#     serializer_class = ExtractSerializer
-
-class LoanViewset(viewsets.ModelViewSet):
-    queryset = Transaction.objects.all()
+class LoanViewSet(viewsets.ModelViewSet):
+    queryset = Loan.objects.all()
     serializer_class = LoanSerializer
     
-    def create:
+    def create(self, request):
         try:
             loan = request.data
-            valor_solicitado = Decimal(loan["valor_solicitado"])
-            salario = loan["salario"]       
+            cliente = loan['id_cliente']
+            valor_solicitado = Decimal(loan['valor_solicitado'])
+            conta_cliente = AccountCustomer.objects.filter(id=cliente).first()
+            salario = float(loan['salario'])
+            parcelas = loan['parcelas']
             
-            conta_sender_id = loan["id_cliente"]
-            conta_sender = AccountCustomer.objects.get(id=conta_sender_id)
-            
-            if type_transaction in ["PIX", "TRANSFERENCIA"]:
-                if conta_sender.saldo < valor:
-                    return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
-                else:
-                    Transaction.objects.create(
-                        id_cliente=conta_sender,
-                        valor=valor,
-                        transaction_type=type_transaction,
-                        conta_receiver=conta_received
+            if parcelas <= 24:
+                if salario >= 1800.00:
+                    Loan.objects.create(
+                        id_cliente=conta_cliente,
+                        valor_solicitado=valor_solicitado,
+                        salario=salario,
+                        parcelas=parcelas,
+                        aprovado=True
                     ) 
                     
-                    conta_sender.saldo -= valor
-                    conta_sender.save()
-                    conta_received.saldo += valor
-                    conta_received.save()
-                    
-                    return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+                    conta_cliente.saldo += valor_solicitado
+                    conta_cliente.save()
+                                
+                    return JsonResponse({'message': 'Emprestimo concedido com sucesso.'})
+                else:
+                    return JsonResponse({'message': 'Seu emprestimo foi negado'})
+                
+            else:
+                return JsonResponse({'message': 'O numero permitido de parcelas deve ser de até 24'})
         except:
-            ...
+            return JsonResponse({'message': 'Não foi possível fazer o emprestimo'})
+        
+        
