@@ -157,11 +157,12 @@ class LoanViewSet(viewsets.ModelViewSet):
                                 
                     return JsonResponse({'message': 'Emprestimo concedido com sucesso.'})
                 else:
-                    return JsonResponse({'message': 'Seu emprestimo foi negado'})
+                    return JsonResponse({'message': 'Seu emprestimo foi negado após nossa avaliação'})
                 
             else:
                 return JsonResponse({'message': 'O numero permitido de parcelas deve ser de até 24'})
         except:
             return JsonResponse({'message': 'Não foi possível fazer o emprestimo'})
         
+
         
