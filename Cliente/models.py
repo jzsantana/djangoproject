@@ -83,6 +83,7 @@ class Customer(AbstractBaseUser):
     house_num = models.CharField(max_length=6)
     is_staff = models.BooleanField(default=True) 
     is_superuser = models.BooleanField(default=False)
+    profile_picture = models.ImageField(null=True)
     
     USERNAME_FIELD = 'cpf'
     REQUIRED_FIELDS = [
@@ -185,7 +186,8 @@ class Loan(models.Model):
     id_cliente_conta = models.ForeignKey(AccountCustomer, on_delete=models.CASCADE)
     valor_solicitado = models.DecimalField(max_digits=10, decimal_places=2)
     parcelas = models.IntegerField(default=0)
-    ...
+    aprovado = models.BooleanField()
+    salario = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class Extract(models.Model):

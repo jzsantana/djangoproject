@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework import filters
-from Cliente.serializers import DebitCardSerializer, AccountCustomerSerializer, CreditCardSerializer, TransactionSerializer, CustomerSerializer
-from Cliente.models import  AccountCustomer, DebitCard, CreditCard, Customer, Transaction, SorteioUnico
+from Cliente.serializers import DebitCardSerializer, AccountCustomerSerializer, CreditCardSerializer, TransactionSerializer, CustomerSerializer, LoanSerializer
+from Cliente.models import  AccountCustomer, DebitCard, CreditCard, Customer, Transaction, SorteioUnico, Loan
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from decimal import Decimal
@@ -130,3 +130,36 @@ class TransactionViewSet(viewsets.ModelViewSet):
 # class ExtractViewSet(viewsets.ModelViewSet):
 #     queryset = AccountCustomer.objects.all()
 #     serializer_class = ExtractSerializer
+
+class LoanViewset(viewsets.ModelViewSet):
+    queryset = Transaction.objects.all()
+    serializer_class = LoanSerializer
+    
+    def create:
+        try:
+            loan = request.data
+            valor_solicitado = Decimal(loan["valor_solicitado"])
+            salario = loan["salario"]       
+            
+            conta_sender_id = loan["id_cliente"]
+            conta_sender = AccountCustomer.objects.get(id=conta_sender_id)
+            
+            if type_transaction in ["PIX", "TRANSFERENCIA"]:
+                if conta_sender.saldo < valor:
+                    return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
+                else:
+                    Transaction.objects.create(
+                        id_cliente=conta_sender,
+                        valor=valor,
+                        transaction_type=type_transaction,
+                        conta_receiver=conta_received
+                    ) 
+                    
+                    conta_sender.saldo -= valor
+                    conta_sender.save()
+                    conta_received.saldo += valor
+                    conta_received.save()
+                    
+                    return JsonResponse({'message': 'Transferencia realizada com sucesso.'})
+        except:
+            ...
