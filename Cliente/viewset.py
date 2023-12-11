@@ -6,8 +6,16 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from decimal import Decimal
 from rest_framework.response import Response
+import django_filters
 import random
 
+
+class AccountCustomerFilter(django_filters.FilterSet):
+    cpf = django_filters.CharFilter(field_name='id_cliente__cpf', lookup_expr='exact')
+
+    class Meta:
+        model = AccountCustomer
+        fields = ['cpf']
 
 class AccountCustomerViewSet(viewsets.ModelViewSet):
     queryset = AccountCustomer.objects.all()

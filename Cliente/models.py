@@ -83,7 +83,7 @@ class Customer(AbstractBaseUser):
     house_num = models.CharField(max_length=6)
     is_staff = models.BooleanField(default=True) 
     is_superuser = models.BooleanField(default=False)
-    profile_picture = models.ImageField(upload_to='perfil/')
+    profile_picture = models.ImageField(upload_to='perfil/', blank=True)
     
     USERNAME_FIELD = 'cpf'
     REQUIRED_FIELDS = [

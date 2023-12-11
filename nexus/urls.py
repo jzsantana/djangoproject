@@ -45,8 +45,9 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/', include('Cliente.urls')),
     path('auth/', include('djoser.urls')) ,
-    path('auth/', include('djoser.urls.jwt')),
-    # path('auth/', include('djoser.urls.authtoken')),
+    # path('auth/', include('djoser.urls.jwt')),
+    path('auth/', include('djoser.urls.authtoken')),
+
         
     # path('api/v1', include('Cliente.urls')),
 ] 

@@ -67,14 +67,14 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
-    "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5173",
     "http://127.0.0.1:8000",
     "http://127.0.0.1:8080",
     "http://localhost:8080",
     "http://10.109.71.43:8080",
     "http://192.168.0.101:8080",
-    
+    "http://192.168.0.106:8080",
 ]
 
 ROOT_URLCONF = 'nexus.urls'
@@ -178,12 +178,12 @@ REST_FRAMEWORK = {
     # },
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'id_cliente',
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
+#     'AUTH_HEADER_TYPES': ('JWT',),
+#     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+#     'USER_ID_FIELD': 'id',
+#     'USER_ID_CLAIM': 'id_cliente',
+# }
 
