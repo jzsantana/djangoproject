@@ -157,6 +157,8 @@ REST_FRAMEWORK = {
     "DATE_FORMAT":"%d/%m/%Y",
     'DATE_INPUT_FORMATS':["%d/%m/%Y"],
     
+    # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -175,6 +177,8 @@ REST_FRAMEWORK = {
         'anon': '3/min',
         'user': '100/min'
     },
+    
+
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', 'PAGE_SIZE': 2,
     # 'DEFAULT_THROTTLE_CLASSES':(
     #     'rest_framework.throttling.AnonRateThrottle',

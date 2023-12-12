@@ -30,6 +30,7 @@ class DebitCardViewSet(viewsets.ModelViewSet):
 class CreditCardViewSet(viewsets.ModelViewSet):
     queryset = CreditCard.objects.all()
     serializer_class = CreditCardSerializer
+
     
     def create(self, request):
         print('criando cartão')
