@@ -38,13 +38,6 @@ class ManagerUser(BaseUserManager):
         return user
     
     
-    # def create_user(self, email, cpf, password=None, **extra_fields):
-    #     # extra_fields.setdefault('is_staff', True)
-    #     extra_fields.setdefault('is_superuser', False)
-        
-    #     return self.create_user(email, cpf, password, **extra_fields)
-    
-    
     def create_superuser(self, email, cpf, password=None, **extra_fields):
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_staff', True)

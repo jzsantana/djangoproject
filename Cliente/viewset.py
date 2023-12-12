@@ -95,6 +95,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
                     return JsonResponse({'error': "Saldo insuficiente para realizar a transação"}, status=400)
                 elif conta_sender.saldo == 0:
                     return JsonResponse({'message': 'Você não tem saldo suficiente para realizar essa transação'})
+                elif valor == 0:
+                    return JsonResponse({'message': 'Não é possível realizar esta transação'})
                 else:
                     Transaction.objects.create(
                         id_cliente=conta_sender,
